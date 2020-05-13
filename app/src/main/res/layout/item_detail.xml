@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/detail_photo"
+        android:layout_width="187dp"
+        android:layout_height="190dp"
+        app:srcCompat="@android:drawable/stat_notify_error"
+        android:layout_margin="8dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/detail_photo"
+        android:layout_margin="14dp"
+        android:textSize="16sp"
+        android:text="Name "
+        android:id="@+id/detail_name"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_name"
+        android:layout_marginLeft="14dp"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/detail_photo"
+        android:text="Price"
+        android:id="@+id/detail_price"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_price"
+        android:layout_marginLeft="14dp"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/detail_photo"
+        android:text="Material"
+        android:id="@+id/detail_material"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_material"
+        android:layout_marginLeft="14dp"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/detail_photo"
+        android:text="Из раздела:"
+        android:id="@+id/from_type"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/from_type"
+        android:layout_marginLeft="14dp"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/detail_photo"
+        android:text="Type"
+        android:id="@+id/detail_type"/>
+</RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.AddProviderActivity"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:id="@+id/name_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Введите название поставщика:"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/name_edit_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:inputType="textPersonName"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center"/>
+    <TextView
+        android:id="@+id/address_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Введите адресс поставщика:"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"/>
+    <EditText
+        android:id="@+id/address_edit_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:inputType="textPersonName"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center"/>
+    <TextView
+        android:id="@+id/telephone_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Введите телефон поставщика:"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"/>
+    <EditText
+        android:id="@+id/telephone_edit_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:inputType="phone"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center" />
+    <TextView
+        android:id="@+id/e_mail_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Введите электронную почту поставщика:"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+    <EditText
+        android:id="@+id/e_mail_edit_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="36dp"
+        android:textSize="20sp"
+        android:text="Подтвердить"
+        android:padding="16dp"
+        android:id="@+id/save_changes"/>
+
+
+</LinearLayout>
