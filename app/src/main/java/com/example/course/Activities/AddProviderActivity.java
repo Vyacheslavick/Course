@@ -1,6 +1,9 @@
 package com.example.course.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
@@ -19,15 +22,15 @@ import java.util.List;
 
 public class AddProviderActivity extends AppCompatActivity {
 
-     TextView name;
-     TextView address;
-     TextView telephone;
-     TextView email;
-     EditText nameEdit;
-     EditText addressEdit;
-     EditText telephoneEdit;
-     EditText emailEdit;
-     Button saveChanges;
+     @BindView(R.id.name_provider) TextView name;
+     @BindView(R.id.address_provider) TextView address;
+     @BindView(R.id.telephone_provider) TextView telephone;
+     @BindView(R.id.e_mail_provider) TextView email;
+     @BindView(R.id.name_edit_provider) EditText nameEdit;
+     @BindView(R.id.address_edit_provider) EditText addressEdit;
+     @BindView(R.id.telephone_edit_provider) EditText telephoneEdit;
+     @BindView(R.id.e_mail_edit_provider) EditText emailEdit;
+     @BindView(R.id.save_changes) Button saveChanges;
 
      int providerId;
      Provider providerIntent;
@@ -36,16 +39,7 @@ public class AddProviderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_provider);
-
-        name = findViewById(R.id.name_provider);
-        address = findViewById(R.id.address_provider);
-        telephone = findViewById(R.id.telephone_provider);
-        email = findViewById(R.id.e_mail_provider);
-        nameEdit = findViewById(R.id.name_edit_provider);
-        addressEdit = findViewById(R.id.address_edit_provider);
-        telephoneEdit = findViewById(R.id.telephone_edit_provider);
-        emailEdit = findViewById(R.id.e_mail_edit_provider);
-        saveChanges = findViewById(R.id.save_changes);
+        ButterKnife.bind(this);
 
         providerId = getIntent().getIntExtra("ProviderId", -1);
 
@@ -58,52 +52,50 @@ public class AddProviderActivity extends AppCompatActivity {
 
 
         }
+    }
 
-        saveChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!nameEdit.getText().toString().isEmpty()) {
-                    if (!addressEdit.getText().toString().isEmpty()) {
-                        if (!telephoneEdit.getText().toString().isEmpty()) {
+    @OnClick(R.id.save_changes)
+    void setSaveChanges(){
+        if (!nameEdit.getText().toString().isEmpty()) {
+            if (!addressEdit.getText().toString().isEmpty()) {
+                if (!telephoneEdit.getText().toString().isEmpty()) {
 
-                            Intent intent = new Intent();
-                            Provider provider = new Provider(0, addressEdit.getText().toString(), nameEdit.getText().toString(),
-                                    telephoneEdit.getText().toString(), emailEdit.getText().toString());
+                    Intent intent = new Intent();
+                    Provider provider = new Provider(0, addressEdit.getText().toString(), nameEdit.getText().toString(),
+                            telephoneEdit.getText().toString(), emailEdit.getText().toString());
 
-                            intent.putExtra("ProviderAddress", provider.address);
-                            intent.putExtra("ProviderName", provider.name);
-                            intent.putExtra("ProviderTelephone", provider.telephone);
-                            intent.putExtra("ProviderEmail", provider.eMail);
+                    intent.putExtra("ProviderAddress", provider.address);
+                    intent.putExtra("ProviderName", provider.name);
+                    intent.putExtra("ProviderTelephone", provider.telephone);
+                    intent.putExtra("ProviderEmail", provider.eMail);
 
-                            if (providerId > -1) {
-                                try {
-                                    provider.setId(providerId);
-                                    App.getInstance().getDatabase().providerDao().updateProvider(provider);
-                                    intent.putExtra("ProviderId", provider.getId());
-                                    intent.putExtra("ListId", getIntent().getIntExtra("ListId", 0));
-                                    setResult(RESULT_OK, intent);
-                                    onBackPressed();
-                                } catch (SQLiteConstraintException e) {
-                                    Toast.makeText(AddProviderActivity.this, "Поставщик с такими данными уже существует", Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                try {
-                                    int id = (int) App.getInstance().getDatabase().providerDao().insertProvider(provider);
-                                    intent.putExtra("ProviderId", id);
-                                    setResult(RESULT_OK, intent);
-                                    onBackPressed();
-                                } catch (SQLiteConstraintException e) {
-                                    Toast.makeText(AddProviderActivity.this, "Поставщик с такими данными уже существует", Toast.LENGTH_LONG).show();
-                                }
+                    if (providerId > -1) {
+                        try {
+                            provider.setId(providerId);
+                            App.getInstance().getDatabase().providerDao().updateProvider(provider);
+                            intent.putExtra("ProviderId", provider.getId());
+                            intent.putExtra("ListId", getIntent().getIntExtra("ListId", 0));
+                            setResult(RESULT_OK, intent);
+                            onBackPressed();
+                        } catch (SQLiteConstraintException e) {
+                            Toast.makeText(AddProviderActivity.this, "Поставщик с такими данными уже существует", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        try {
+                            int id = (int) App.getInstance().getDatabase().providerDao().insertProvider(provider);
+                            intent.putExtra("ProviderId", id);
+                            setResult(RESULT_OK, intent);
+                            onBackPressed();
+                        } catch (SQLiteConstraintException e) {
+                            Toast.makeText(AddProviderActivity.this, "Поставщик с такими данными уже существует", Toast.LENGTH_LONG).show();
+                        }
 
 
-                            }
+                    }
 
-                        } else telephone.setText("Телефон - обязательное поле");
-                    } else address.setText("Адресс - обязательное поле");
-                } else name.setText("Название - обязательное поле");
-            }
-        });
+                } else telephone.setText("Телефон - обязательное поле");
+            } else address.setText("Адресс - обязательное поле");
+        } else name.setText("Название - обязательное поле");
     }
 
 }

@@ -10,8 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.SupplyViewActivity"></activity>
-        <activity android:name=".Activities.AddToBucketActivity" />
+        <activity android:name=".Activities.ReturnActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".Activities.AddToSaleActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Activities.SupplyViewActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Activities.AddToBucketActivity" android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.SettingsDetailActivity"
             android:screenOrientation="portrait" />

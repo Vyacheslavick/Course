@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.course.DBClasses.AdditionClasses.SuppCount;
 import com.example.course.DBClasses.SupReceipt;
 import com.example.course.R;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -21,16 +19,16 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecyclerAdapterHistory extends RecyclerView.Adapter<RecyclerAdapterHistory.VieHolder> {
 
     Context context;
-    List<SuppCount> suppCounts;
+    List<SupReceipt> supReceipts;
     OnReceiptItemClick onReceiptItemClick;
 
     public interface OnReceiptItemClick{
         void onClick(int position);
     }
 
-    public RecyclerAdapterHistory(Context context, List<SuppCount> suppCounts, OnReceiptItemClick onReceiptItemClick) {
+    public RecyclerAdapterHistory(Context context, List<SupReceipt> supReceipts, OnReceiptItemClick onReceiptItemClick) {
         this.context = context;
-        this.suppCounts = suppCounts;
+        this.supReceipts = supReceipts;
         this.onReceiptItemClick = onReceiptItemClick;
     }
 
@@ -43,27 +41,24 @@ public class RecyclerAdapterHistory extends RecyclerView.Adapter<RecyclerAdapter
 
     @Override
     public void onBindViewHolder(@NonNull VieHolder holder, int position) {
-        SuppCount suppCount = suppCounts.get(position);
-        holder.num.setText("Номер заказа "+suppCount.idSup);
-        holder.count.setText("Кол-во заказов " + suppCount.count);
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-        Date date = new Date(suppCount.date);
+        SupReceipt supReceipt = supReceipts.get(position);
+        holder.num.setText("Номер заказа "+supReceipt.id);
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy в HH:mm");
+        Date date = new Date(supReceipt.date);
         holder.date.setText(format.format(date));
     }
 
     @Override
     public int getItemCount() {
-        return suppCounts.size();
+        return supReceipts.size();
     }
 
     public class VieHolder extends RecyclerView.ViewHolder {
         TextView num;
-        TextView count;
         TextView date;
         public VieHolder(@NonNull View itemView) {
             super(itemView);
             num = itemView.findViewById(R.id.num_of_check);
-            count = itemView.findViewById(R.id.count);
             date = itemView.findViewById(R.id.item_date);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -22,13 +22,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class CarFragment extends Fragment implements RecyclerAdapterCar.OnCarItemClick{
 
     int flag = 0;
-    EditText carEdit;
-    Button addCar;
-    RecyclerView carList;
+    @BindView(R.id.edit_car) EditText carEdit;
+    @BindView(R.id.add_car) Button addCar;
+    @BindView(R.id.list_cars) RecyclerView carList;
+
     LinearLayoutManager layoutManager;
     RecyclerAdapterCar adapter;
     List<Car> cars;
@@ -37,31 +41,31 @@ public class CarFragment extends Fragment implements RecyclerAdapterCar.OnCarIte
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_car, container, false);
-        carEdit = view.findViewById(R.id.edit_car);
-        addCar = view.findViewById(R.id.add_car);
+        ButterKnife.bind(this,view);
+
         cars = App.getInstance().getDatabase().compatDao().cars();
-        carList = view.findViewById(R.id.list_cars);
+
         layoutManager = new LinearLayoutManager(view.getContext());
         carList.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterCar(view.getContext(), cars,this);
         carList.setAdapter(adapter);
 
-        addCar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = carEdit.getText().toString();
-                if (!s.isEmpty()) {
-                    try {
-                        int id = (int) App.getInstance().getDatabase().compatDao().insertCar(new Car(0, s));
-                        cars.add(new Car(id, s));
-                        adapter.notifyDataSetChanged();
-                    } catch (SQLiteConstraintException e) {
-                        Toast.makeText(getContext(), "Такая машина уже есть", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        });
         return view;
+    }
+
+    @OnClick(R.id.add_car)
+    void setAddCar(){
+        String s = carEdit.getText().toString();
+        if (!s.isEmpty()) {
+            try {
+                int id = (int) App.getInstance().getDatabase().compatDao().insertCar(new Car(0, s));
+                cars.add(new Car(id, s));
+                adapter.notifyDataSetChanged();
+                carEdit.setText("");
+            } catch (SQLiteConstraintException e) {
+                Toast.makeText(getContext(), "Такая машина уже есть", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override

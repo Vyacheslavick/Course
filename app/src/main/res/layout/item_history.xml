@@ -14,29 +14,13 @@
         android:padding="8dp"
         android:layout_gravity="center"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date"
-            android:id="@+id/item_date"
-            android:textSize="20sp"
-            android:padding="8dp"
-            android:layout_marginLeft="16dp"/>
-
-        <TextView
-            android:id="@+id/count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:textSize="20sp"
-            android:text="Колво заказов"/>
-
-    </LinearLayout>
+        android:text="Date"
+        android:id="@+id/item_date"
+        android:textSize="20sp"
+        android:padding="8dp"
+        android:layout_marginLeft="16dp"/>
 
 </LinearLayout>

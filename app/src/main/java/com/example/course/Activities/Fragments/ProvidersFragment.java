@@ -22,38 +22,40 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 import static android.app.Activity.RESULT_OK;
 
 public class ProvidersFragment extends Fragment implements RecyclerAdapterProviders.OnProviderItemClick {
 
-    Button addProvider;
-    RecyclerView list;
+    @BindView(R.id.list_provider) RecyclerView list;
+
     LinearLayoutManager layoutManager;
     RecyclerAdapterProviders adapter;
     List<Provider> providerList;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_providers,container,false);
-
-        addProvider = view.findViewById(R.id.add_provider);
-        list = view.findViewById(R.id.list_provider);
+        ButterKnife.bind(this, view);
 
         providerList = App.getInstance().getDatabase().providerDao().providers();
         layoutManager = new LinearLayoutManager(view.getContext());
         list.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterProviders(view.getContext(), providerList,this);
         list.setAdapter(adapter);
-        addProvider.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AddProviderActivity.class);
-                startActivityForResult(intent, 98);
-            }
-        });
+
         return view;
+    }
+
+    @OnClick(R.id.add_provider)
+    void setAddProvider(){
+        Intent intent = new Intent(getContext(), AddProviderActivity.class);
+        startActivityForResult(intent, 98);
     }
 
     @Override
@@ -88,4 +90,5 @@ public class ProvidersFragment extends Fragment implements RecyclerAdapterProvid
             }
         }
     }
+
 }

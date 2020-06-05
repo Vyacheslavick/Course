@@ -11,7 +11,10 @@ import android.widget.TextView;
 
 import com.example.course.DBClasses.AdditionClasses.SaleFull;
 import com.example.course.R;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -37,13 +40,11 @@ public class RecyclerAdapterSales extends RecyclerView.Adapter<RecyclerAdapterSa
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SaleFull sale = sales.get(position);
-        holder.imageView.setImageURI(sale.image);
-        holder.provider.setText(sale.provName);
+        if (sale.image != null) Picasso.get().load(sale.image).centerCrop().resize(600, 600).into(holder.imageView);
         String s = sale.count +" шт.";
         holder.sold.setText(s);
-        holder.type.setText(sale.type);
-        s = sale.cost + "грн";
-        holder.material.setText(sale.material);
+        DecimalFormat format = new DecimalFormat("0.00");
+        s = format.format(sale.cost) + "грн";
         holder.price.setText(s);
         s = sale.detailName + " ("+ sale.vendor + ')';
         holder.name.setText(s);
@@ -58,19 +59,13 @@ public class RecyclerAdapterSales extends RecyclerView.Adapter<RecyclerAdapterSa
         ImageView imageView;
         TextView name;
         TextView price;
-        TextView material;
-        TextView type;
         TextView sold;
-        TextView provider;
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
             name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
-            material = itemView.findViewById(R.id.material);
-            type = itemView.findViewById(R.id.type);
             sold = itemView.findViewById(R.id.sold);
-            provider = itemView.findViewById(R.id.provider);
         }
     }
 }

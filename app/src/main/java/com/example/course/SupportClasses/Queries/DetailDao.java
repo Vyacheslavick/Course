@@ -27,23 +27,28 @@ public interface DetailDao {
     @Query("Update detail set count = count + :count where id = :id")
     void updateDetailWithId(int id, int count);
 
+    @Query("Update detail set count = count - :count where id = :id")
+    void updateDetailMinusWithId(int id, int count);
+
     @Query("Delete from detail where id = :id")
     void  deleteDetailWithId(int id);
 
-    @Query("Select * from detail")
+    @Query("Select * from detail ")
     List<Detail> details();
 
     @Query("Select * from detail where id = :id")
     Detail detailWithId(int id);
 
+    @Query("Select * from detail where count > 0 and (name like '%' || :name || '%' or vendor like '%' || :name || '%' or type like '%' || :name || '%') ")
+    List<Detail> detailsInWarehouse(String name);
+
+
 
 
     @Query("Select id , name, vendor, 0 as cost, material, type, photo " +
-            "from detail where name like :search or vendor like :search or type like :search ")
+            "from detail where name like '%' || :search || '%' or vendor like '%' || :search || '%' or type like '%' || :search || '%' ")
     List<DetailShort> detailShortLike(String search);
 
-    @Query("Select *from detail where type like '%' || :type || '%'")
-    List<Detail> detailTypeLike(String type);
 
     @Query("Select dp.cost " +
             "from detail d join detproviders dp on (d.id = dp.idDetail)" +
@@ -56,14 +61,13 @@ public interface DetailDao {
 
     @Query("Select d.id as id, d.name as name , d.vendor as vendor, dp.cost as cost, d.material as material, d.type as type, d.photo as photo " +
             "from detail d join detproviders dp on (d.id = dp.idDetail) where d.name like '%' || :name || '%' or d.vendor like '%' || :name || '%' or d.type like '%' || :name || '%' " +
-            " group by d.id having max(date)   ")
+            " group by d.id having max(date)")
     List<DetailShort> getFullShortDetails(String name);
 
     @Query("Select d.id as id, d.name as name , d.vendor as vendor, 0 as cost, d.material as material, d.type as type, d.photo as photo " +
-            "from detail d where d.id = :id ")
+            "from detail d  where d.id = :id ")
     DetailShort getShortDetailWithId(int id);
 
-    @Query("Select type from detail")
-    List<String> getTypes();
+
 
 }

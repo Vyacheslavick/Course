@@ -1,5 +1,7 @@
 package com.example.course.SupportClasses.Queries;
 
+import com.example.course.DBClasses.AdditionClasses.FullReceipt;
+import com.example.course.DBClasses.AdditionClasses.SupplyBucket;
 import com.example.course.DBClasses.Receipt;
 import com.example.course.DBClasses.Sale;
 import com.example.course.DBClasses.AdditionClasses.SaleFull;
@@ -16,10 +18,10 @@ import androidx.room.Update;
 public interface SalesDao {
 
     @Insert
-    void insertReceipt(Receipt receipt);
+    long insertReceipt(Receipt receipt);
 
     @Insert
-    void insertSales(Sale... sales);
+    long insertSales(Sale sales);
 
     @Update
     void updateReceipt(Receipt... receipts);
@@ -33,13 +35,25 @@ public interface SalesDao {
     @Delete
     void deleteSale(Sale... sales);
 
-    @Query("Select * from Receipt")
-    List<Receipt> receipts();
+    @Query("Delete from sale where id = :id")
+    void deleteSaleWithId(int id);
+
+    @Query("Select r.id as id, r.date as date, sum(s.cost*s.count) as sum from Receipt r join Sale s on (r.id = s.idReceipt) " +
+            "where date > 0 group by r.date order by date desc")
+    List<FullReceipt> receipts();
 
     @Query("Select * from Sale where idReceipt = :id")
     List<Sale> sales(int id);
 
-    @Query("Select d.name as detailName, s.cost as cost, d.material as material, d.type as type, d.vendor as vendor, s.count as count, p.name as provName , d.photo as image " +
-            "from detail d join detproviders dp on (d.id = dp.idDetail) join Provider p on (dp.idProvider = p.id) join sale s on (dp.id = s.detProvider) where s.idReceipt = :idReceipt")
+    @Query("Select s.id as id, d.id as idDetail, d.name as detailName, s.cost as cost, d.vendor as vendor, s.count as count , d.photo as image " +
+            "from detail d join sale s on (d.id = s.idDetail) where s.idReceipt = :idReceipt")
     List<SaleFull> viewSale(int idReceipt);
+
+    @Query("Select d.id as idDet, s.id as id, d.name as name, s.count as count, d.photo as photo, s.cost as cost " +
+            "from receipt r join sale s on (r.id = s.idReceipt) join detail d on (s.idDetail = d.id) " +
+            "where r.date = 0" )
+    List<SupplyBucket> sellsInBucket();
+
+    @Query("Select * from Sale where id = :id")
+    Sale saleWithId(int id);
 }

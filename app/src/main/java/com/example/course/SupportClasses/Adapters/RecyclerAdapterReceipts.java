@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.course.DBClasses.AdditionClasses.FullReceipt;
 import com.example.course.DBClasses.Receipt;
 import com.example.course.R;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerAdapterReceipts extends RecyclerView.Adapter<RecyclerAdapterReceipts.ViewHolder> {
 
-    public List<Receipt> receiptList;
+    public List<FullReceipt> receiptList;
     public Context context;
     public OnReceiptItemClick onReceiptItemClick;
 
@@ -26,7 +28,7 @@ public class RecyclerAdapterReceipts extends RecyclerView.Adapter<RecyclerAdapte
         void onClick(int position);
     }
 
-    public RecyclerAdapterReceipts(List<Receipt> receiptList, Context context, OnReceiptItemClick onReceiptItemClick) {
+    public RecyclerAdapterReceipts(List<FullReceipt> receiptList, Context context, OnReceiptItemClick onReceiptItemClick) {
         this.receiptList = receiptList;
         this.context = context;
         this.onReceiptItemClick = onReceiptItemClick;
@@ -41,11 +43,12 @@ public class RecyclerAdapterReceipts extends RecyclerView.Adapter<RecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Receipt receipt = receiptList.get(position);
-        holder.numCheck.setText("Чек №"+receipt.id);
+        FullReceipt receipt = receiptList.get(position);
+        holder.numCheck.setText("Чек № "+receipt.id);
         Date date = new Date(receipt.date);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy 'в' HH:mm");
-        holder.date.setText(dateFormat.format(date));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy 'в' HH:mm");
+        DecimalFormat format = new DecimalFormat("0.00");
+        holder.date.setText(dateFormat.format(date) + "  " + format.format(receipt.sum));
     }
 
     @Override

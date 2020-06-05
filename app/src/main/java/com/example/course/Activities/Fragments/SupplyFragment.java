@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.course.Activities.AddToBucketActivity;
 import com.example.course.DBClasses.AdditionClasses.DetailShort;
@@ -38,26 +39,30 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
 public class SupplyFragment extends Fragment implements RecyclerAdapterDetails.OnDetailsItemClick, RecyclerAdapterSupplies.OnBucketItemClick {
 
-    boolean bucketFlag = true;
-    boolean filtersFlag = true;
-    ImageView bucket;
-    ImageView filters;
-    Button doSupply;
-    LinearLayout filter;
-    LinearLayout supplies;
-    RecyclerView listSupplies;
-    RecyclerView listDetails;
+
+    @BindView(R.id.bucket) ImageView bucket;
+    @BindView(R.id.filters) ImageView filters;
+    @BindView(R.id.do_supply) Button doSupply;
+    @BindView(R.id.supplies) LinearLayout supplies;
+    @BindView(R.id.list_supplies) RecyclerView listSupplies;
+    @BindView(R.id.list_details) RecyclerView listDetails;
+    @BindView(R.id.search) EditText search;
+
     LinearLayoutManager layoutManagerDetails;
     LinearLayoutManager layoutManagerSupplies;
     RecyclerAdapterDetails adapterDetails;
     RecyclerAdapterSupplies adapterSupplies;
-    EditText search;
+
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,0,0);
+    boolean bucketFlag = true;
 
     List<DetailShort> details = App.getInstance().getDatabase().detailDao().getFullShortDetails("");
     List<SupplyBucket> supplyList = App.getInstance().getDatabase().supplyDao().suppliesInBucket();
@@ -68,25 +73,19 @@ public class SupplyFragment extends Fragment implements RecyclerAdapterDetails.O
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_supply, container, false);
-        bucket = view.findViewById(R.id.bucket);
-        filters = view.findViewById(R.id.filters);
-        filter = view.findViewById(R.id.filter);
-        supplies = view.findViewById(R.id.supplies);
-        listDetails = view.findViewById(R.id.list_details);
-        doSupply = view.findViewById(R.id.do_supply);
-        search = view.findViewById(R.id.search);
-        listSupplies = view.findViewById(R.id.list_supplies);
+        ButterKnife.bind(this, view);
+
 
         sp = getActivity().getPreferences(Context.MODE_PRIVATE);
-        if (sp.getInt("SupplyId", 0) == 0){
+        SupReceipt sr = App.getInstance().getDatabase().supplyDao().getLastRec();
+        if (sr == null) sr = new SupReceipt(0);
+        if (sr.date != 0 || sr.id == 0 ){
             idSup = (int)App.getInstance().getDatabase().supplyDao().insertSupReceipt(new SupReceipt(0));
             sp.edit().putInt("SupplyId", idSup).apply();
         } else {
+            sp.edit().putInt("SupplyId", sr.id).apply();
             idSup = sp.getInt("SupplyId",0);
         }
-
-
-
         layoutManagerDetails = new LinearLayoutManager(view.getContext());
         listDetails.setLayoutManager(layoutManagerDetails);
         adapterDetails = new RecyclerAdapterDetails(view.getContext(), details,this);
@@ -118,72 +117,47 @@ public class SupplyFragment extends Fragment implements RecyclerAdapterDetails.O
             }
         });
 
-        bucket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (bucketFlag){
-                    LinearLayout.LayoutParams paramsBig = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 9);
-                    LinearLayout.LayoutParams paramsButton = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
-                    filter.setLayoutParams(params);
-                    listDetails.setLayoutParams(params);
-                    supplies.setLayoutParams(paramsBig);
-                    doSupply.setLayoutParams(paramsButton);
-                    filtersFlag = true;
-                    bucketFlag = false;
-                    search.setEnabled(false);
-                } else {
-                    LinearLayout.LayoutParams paramsBig = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 10);
-                    doSupply.setLayoutParams(params);
-                    supplies.setLayoutParams(params);
-                    listDetails.setLayoutParams(paramsBig);
-                    bucketFlag = true;
-                    search.setEnabled(true);
-                }
-            }
-        });
-        filters.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (filtersFlag){
-                    LinearLayout.LayoutParams paramsBig = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 10);
-                    doSupply.setLayoutParams(params);
-                    supplies.setLayoutParams(params);
-                    listDetails.setLayoutParams(params);
-                    filter.setLayoutParams(paramsBig);
-                    bucketFlag = true;
-                    filtersFlag = false;
-                    search.setEnabled(false);
-                } else {
-                    filter.setLayoutParams(params);
-                    LinearLayout.LayoutParams paramsBig = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 10);
-                    supplies.setLayoutParams(params);
-                    listDetails.setLayoutParams(paramsBig);
-                    filtersFlag = true;
-                    search.setEnabled(true);
-                }
-
-            }
-        });
-
-        doSupply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (sp.getInt("SupplyId", 0) != 0) {
-                    for (SupplyBucket supplyBucket: supplyList){
-                        App.getInstance().getDatabase().detailDao().updateDetailWithId(supplyBucket.id, supplyBucket.count);
-                    }
-                    SupReceipt supReceipt = new SupReceipt(new Date().getTime());
-                    supReceipt.id = sp.getInt("SupplyId", 0);
-                    App.getInstance().getDatabase().supplyDao().updateSupReceipt(supReceipt);
-                    supplyList.removeAll(supplyList);
-                    adapterSupplies.notifyDataSetChanged();
-                    adapterSupplies = new RecyclerAdapterSupplies(getContext(), supplyList,SupplyFragment.this);
-                    listSupplies.setAdapter(adapterSupplies);
-                }
-            }
-        });
         return view;
     }
+
+    @OnClick(R.id.bucket)
+    void setBucket(){
+        if (bucketFlag){
+            LinearLayout.LayoutParams paramsBig = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 9);
+            LinearLayout.LayoutParams paramsButton = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
+            listDetails.setLayoutParams(params);
+            supplies.setLayoutParams(paramsBig);
+            doSupply.setLayoutParams(paramsButton);
+            bucketFlag = false;
+            search.setEnabled(false);
+        } else {
+            LinearLayout.LayoutParams paramsBig = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 10);
+            doSupply.setLayoutParams(params);
+            supplies.setLayoutParams(params);
+            listDetails.setLayoutParams(paramsBig);
+            bucketFlag = true;
+            search.setEnabled(true);
+        }
+    }
+
+
+    @OnClick(R.id.do_supply)
+    void setDoSupply(){
+        if (sp.getInt("SupplyId", 0) != 0) {
+            for (SupplyBucket supplyBucket: supplyList){
+                App.getInstance().getDatabase().detailDao().updateDetailWithId(supplyBucket.idDet, supplyBucket.count);
+            }
+            SupReceipt supReceipt = new SupReceipt(new Date().getTime());
+            supReceipt.id = sp.getInt("SupplyId", 0);
+            App.getInstance().getDatabase().supplyDao().updateSupReceipt(supReceipt);
+            supplyList.removeAll(supplyList);
+            adapterSupplies.notifyDataSetChanged();
+            adapterSupplies = new RecyclerAdapterSupplies(getContext(), supplyList,SupplyFragment.this);
+            listSupplies.setAdapter(adapterSupplies);
+            sp.edit().clear().apply();
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

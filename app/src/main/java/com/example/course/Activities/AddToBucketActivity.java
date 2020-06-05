@@ -1,6 +1,8 @@
 package com.example.course.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,12 +29,12 @@ import java.util.List;
 
 public class AddToBucketActivity extends AppCompatActivity {
 
-    ImageView photo;
-    TextView name;
-    TextView price;
-    EditText count;
-    Spinner providersSpinner;
-    Button addToBucket;
+    @BindView(R.id.detail_photo) ImageView photo;
+    @BindView(R.id.name) TextView name;
+    @BindView(R.id.price) TextView price;
+    @BindView(R.id.count) EditText count;
+    @BindView(R.id.providers) Spinner providersSpinner;
+    @BindView(R.id.add_to_bucket) Button addToBucket;
     List<ProviderForDetail> provider;
     int idDetprov;
     int idDet ;
@@ -41,12 +43,7 @@ public class AddToBucketActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_to_bucket);
-        photo = findViewById(R.id.detail_photo);
-        name = findViewById(R.id.name);
-        price = findViewById(R.id.price);
-        count = findViewById(R.id.count);
-        providersSpinner = findViewById(R.id.providers);
-        addToBucket = findViewById(R.id.add_to_bucket);
+        ButterKnife.bind(this);
 
         idDet = getIntent().getIntExtra("DetailId", 0);
 
@@ -89,22 +86,19 @@ public class AddToBucketActivity extends AppCompatActivity {
 
 
 
-        addToBucket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!count.getText().toString().equals("")){
-                    Supply supply = new Supply(idDetprov, Integer.parseInt(count.getText().toString()),getIntent().getIntExtra("SupplyId", 0));
-                    int sup = (int) App.getInstance().getDatabase().supplyDao().insertSupply(supply);
-                    Intent intent = new Intent();
-                    intent.putExtra("SupplyId", sup);
-                    intent.putExtra("SupplyName", detail.name);
-                    intent.putExtra("SupplyCost", detail.cost);
-                    intent.putExtra("DetailId", detail.id);
-                    if (detail.photo == null) intent.putExtra("Photo","no");
-                    else intent.putExtra("Photo", detail.photo.toString());
-                    setResult(RESULT_OK,intent);
-                    onBackPressed();
-                }
+        addToBucket.setOnClickListener(v -> {
+            if (!count.getText().toString().equals("")){
+                Supply supply = new Supply(idDetprov, Integer.parseInt(count.getText().toString()),getIntent().getIntExtra("SupplyId", 0));
+                int sup = (int) App.getInstance().getDatabase().supplyDao().insertSupply(supply);
+                Intent intent = new Intent();
+                intent.putExtra("SupplyId", sup);
+                intent.putExtra("SupplyName", detail.name);
+                intent.putExtra("SupplyCost", detail.cost);
+                intent.putExtra("DetailId", detail.id);
+                if (detail.photo == null) intent.putExtra("Photo","no");
+                else intent.putExtra("Photo", detail.photo.toString());
+                setResult(RESULT_OK,intent);
+                onBackPressed();
             }
         });
     }

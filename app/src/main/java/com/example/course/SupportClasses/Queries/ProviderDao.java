@@ -38,6 +38,7 @@ public interface ProviderDao {
     @Query("Delete from detproviders where idProvider = :idProvider and idDetail = :idDetail")
     void deleteFromAssortment(int idProvider, int idDetail);
 
+
     @Query("Select * from provider")
     List<Provider> providers();
 
@@ -58,4 +59,7 @@ public interface ProviderDao {
             "where d.id = :id group by idProvider having max(dp.date)")
     List<ProviderForDetail> pricesForDetail(int id);
 
+
+    @Query("Select cost from detproviders where idDetail = :idDet  group by idProvider having max(date)")
+    List<Float> averagePriceForDetail(int idDet);
 }

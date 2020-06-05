@@ -28,25 +28,39 @@ public interface SupplyDao {
     @Query("Delete from supply where id = :id")
     void deleteSupplyWithId(int id);
 
-    @Query("Select COUNT(s.id) as count, s.idSup as idSup, sr.date as date from Supply s join SupReceipt sr on (s.idSup = sr.id) group by s.idSup order by s.idSup desc ")
-    List<SuppCount> supplies();
+    @Query("Select * from  SupReceipt where date > 0 ")
+    List<SupReceipt> supplies();
 
 
     @Query("Select * from supply where id = :id")
     Supply supplyWithId(int id);
 
     @Query("Select d.id as idDet, s.id as id, d.name as name, s.count as count, d.photo as photo, dp.cost as cost " +
-            "from supreceipt sr join supply s on (sr.id = s.idSup) join detproviders dp on (s.detProvider = dp.id) join detail d on (dp.idDetail = idDetail) " +
+            "from supreceipt sr join supply s on (sr.id = s.idSup) join detproviders dp on (s.detProvider = dp.id) join detail d on (dp.idDetail = d.id) " +
             "where sr.date = 0" )
     List<SupplyBucket> suppliesInBucket();
 
+    @Query("Select d.id as idDet, s.id as id, d.name as name, s.count as count, d.photo as photo, dp.cost as cost " +
+            "from supreceipt sr join supply s on (sr.id = s.idSup) join detproviders dp on (s.detProvider = dp.id) join detail d on (dp.idDetail = d.id) " +
+            "where sr.id = :id")
+    List<SupplyBucket> getSup(int id);
+
     @Insert
     long insertSupReceipt(SupReceipt supReceipt);
+
+    @Query("Select * from supreceipt order by id desc limit 1")
+    SupReceipt getLastRec();
 
     @Update
     void updateSupReceipt(SupReceipt supReceipt);
 
     @Query("Delete from supreceipt where date = 0")
     void deleteBucket();
+
+    @Query("Delete from supreceipt")
+    void deleteAllRec();
+
+    @Query("Delete from supply")
+    void deleteAllSup();
 
 }

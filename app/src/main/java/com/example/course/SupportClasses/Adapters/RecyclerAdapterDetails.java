@@ -12,6 +12,7 @@ import com.example.course.R;
 import com.example.course.SupportClasses.App;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.List;
 

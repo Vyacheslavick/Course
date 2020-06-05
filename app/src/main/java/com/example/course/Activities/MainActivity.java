@@ -20,23 +20,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    DrawerLayout drawerLayout;
-    Toolbar toolbar;
-    NavigationView navigationView;
+    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.nav_view) NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        toolbar = findViewById(R.id.toolbar);
-        navigationView = findViewById(R.id.nav_view);
+        ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+
 
         navigationView.setNavigationItemSelectedListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.nav_sell: {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SellFragment()).commit();
+                break;
+            }
+            case R.id.nav_sell_history:{
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SellHistoryFragment()).commit();
                 break;
             }
             case R.id.providers: {

@@ -24,28 +24,30 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
 
 public class DetailFragment extends Fragment implements RecyclerAdapterDetails.OnDetailsItemClick{
 
-    EditText search;
-    Button button;
+    @BindView(R.id.search) EditText search;
+    @BindView(R.id.list_details) RecyclerView list;
+
     LinearLayoutManager layoutManager;
     RecyclerAdapterDetails adapter;
     List<DetailShort> details;
-    RecyclerView list;
+
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
-        search = view.findViewById(R.id.search);
-        button = view.findViewById(R.id.add_detail);
+        ButterKnife.bind(this, view);
 
-        list = view.findViewById(R.id.list_details);
         details = App.getInstance().getDatabase().detailDao().getShortDetails();
         for (int i = 0; i < details.size(); i++){
             details.get(i).cost = App.getInstance().getDatabase().detailDao().getShortDetailsPrice(details.get(i).id);
@@ -55,15 +57,6 @@ public class DetailFragment extends Fragment implements RecyclerAdapterDetails.O
         list.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapterDetails(view.getContext(), details,this);
         list.setAdapter(adapter);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AddDetailActivity.class);
-                intent.putExtra("requestCode", 80);
-                startActivityForResult(intent, 80);
-            }
-        });
 
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -78,7 +71,7 @@ public class DetailFragment extends Fragment implements RecyclerAdapterDetails.O
 
             @Override
             public void afterTextChanged(Editable s) {
-                details = App.getInstance().getDatabase().detailDao().detailShortLike("%"+search.getText().toString()+"%");
+                details = App.getInstance().getDatabase().detailDao().detailShortLike(search.getText().toString());
                 for (int i = 0; i < details.size(); i++){
                     details.get(i).cost = App.getInstance().getDatabase().detailDao().getShortDetailsPrice(details.get(i).id);
                 }
@@ -89,6 +82,13 @@ public class DetailFragment extends Fragment implements RecyclerAdapterDetails.O
         });
 
         return view;
+    }
+
+    @OnClick(R.id.add_detail)
+    void setAddDetail(){
+        Intent intent = new Intent(getContext(), AddDetailActivity.class);
+        intent.putExtra("requestCode", 80);
+        startActivityForResult(intent, 80);
     }
 
     @Override

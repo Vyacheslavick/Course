@@ -21,7 +21,7 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
 @Database(entities = {Car.class, Compatibility.class, Detail.class, DetProviders.class,
-        Provider.class, Receipt.class, Sale.class, Supply.class, SupReceipt.class}, version = 5, exportSchema = false)
+        Provider.class, Receipt.class, Sale.class, Supply.class, SupReceipt.class}, version = 8, exportSchema = false)
 public abstract class FirmDatabase extends RoomDatabase {
     public abstract CompatDao compatDao();
     public abstract DetailDao detailDao();

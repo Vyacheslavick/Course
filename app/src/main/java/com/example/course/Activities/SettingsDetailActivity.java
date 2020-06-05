@@ -3,6 +3,8 @@ package com.example.course.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
@@ -32,8 +34,8 @@ public class SettingsDetailActivity extends AppCompatActivity implements Recycle
 
     LinearLayoutManager layoutManager;
     LinearLayoutManager layoutManager2;
-    RecyclerView list;
-    RecyclerView carList;
+    @BindView(R.id.providers_with_price_list) RecyclerView list;
+    @BindView(R.id.list_cars) RecyclerView carList;
     RecyclerAdapterPrices adapterPrices;
     RecyclerAdapterCar adapterCar;
     List<ProvidersPrice> prices;
@@ -41,26 +43,21 @@ public class SettingsDetailActivity extends AppCompatActivity implements Recycle
     List<Car> cars;
     List<Compatibility> compatibilities;
     List<Car> compatCars;
-    Spinner providersSpinner;
-    Spinner carsSpinner;
+    @BindView(R.id.providers) Spinner providersSpinner;
+    @BindView(R.id.cars) Spinner carsSpinner;
 
-    EditText price;
-    Button save;
-    Button add;
+    @BindView(R.id.price) EditText price;
+    @BindView(R.id.save) Button save;
+    @BindView(R.id.add_car) Button add;
     int detId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_detail);
+        ButterKnife.bind(this);
+
         detId = getIntent().getIntExtra("Id", 0);
-        price = findViewById(R.id.price);
-        save = findViewById(R.id.save);
-        add = findViewById(R.id.add_car);
-        providersSpinner = findViewById(R.id.providers);
-        carsSpinner = findViewById(R.id.cars);
-        carList = findViewById(R.id.list_cars);
-        list = findViewById(R.id.providers_with_price_list);
 
         List<String> names = new ArrayList<>();
         prices = App.getInstance().getDatabase().providerDao().getPriceForDetail(detId);
@@ -98,7 +95,7 @@ public class SettingsDetailActivity extends AppCompatActivity implements Recycle
                 }
             }
         }
-        Toast.makeText(this,compatCars.size()+" size", Toast.LENGTH_LONG).show();
+
         layoutManager2 = new LinearLayoutManager(SettingsDetailActivity.this);
         carList.setLayoutManager(layoutManager2);
         adapterCar = new RecyclerAdapterCar(this, compatCars, this);
@@ -112,12 +109,16 @@ public class SettingsDetailActivity extends AppCompatActivity implements Recycle
                     int provId = providerNames.get(providersSpinner.getSelectedItemPosition()).id;
                     DetProviders detProviders = new DetProviders(detId, provId, Float.parseFloat(price.getText().toString()), new Date().getTime());
                     String name = providerNames.get(providersSpinner.getSelectedItemPosition()).name;
-                    int id = (int) App.getInstance().getDatabase().providerDao().insertDetProvider(detProviders);
+                    App.getInstance().getDatabase().providerDao().insertDetProvider(detProviders);
+
+
                     for (int i = prices.size() - 1; i >= 0; i--) {
                         if (prices.get(i).name.equals(name)) prices.remove(i);
                         adapterPrices.notifyDataSetChanged();
                     }
                     prices.add(new ProvidersPrice(provId, name, Float.parseFloat(price.getText().toString()), 0));
+                    adapterPrices.notifyDataSetChanged();
+                    price.setText("");
                 } else
                     Toast.makeText(SettingsDetailActivity.this, "Для начала введите стоимость", Toast.LENGTH_LONG).show();
             }
@@ -127,11 +128,13 @@ public class SettingsDetailActivity extends AppCompatActivity implements Recycle
             @Override
             public void onClick(View v) {
                 try {
-                    int carId = cars.get(carsSpinner.getSelectedItemPosition()).getId();
-                    int idComp = (int) App.getInstance().getDatabase().compatDao().insertCompat(new Compatibility(0,carId,detId));
-                    compatibilities.add(new Compatibility(idComp,cars.get(carsSpinner.getSelectedItemPosition()).getId(),detId));
-                    compatCars.add(new Car(carId,cars.get(carsSpinner.getSelectedItemPosition()).getName()));
-                    adapterCar.notifyDataSetChanged();
+                    if (cars.size()>0) {
+                        int carId = cars.get(carsSpinner.getSelectedItemPosition()).getId();
+                        int idComp = (int) App.getInstance().getDatabase().compatDao().insertCompat(new Compatibility(0, carId, detId));
+                        compatibilities.add(new Compatibility(idComp, cars.get(carsSpinner.getSelectedItemPosition()).getId(), detId));
+                        compatCars.add(new Car(carId, cars.get(carsSpinner.getSelectedItemPosition()).getName()));
+                        adapterCar.notifyDataSetChanged();
+                    }
                 } catch (SQLiteConstraintException e){
                     Toast.makeText(SettingsDetailActivity.this, "Данная машина уже совместима", Toast.LENGTH_LONG).show();
                 }
